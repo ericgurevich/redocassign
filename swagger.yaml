@@ -1,0 +1,179 @@
+swagger: '2.0'
+info:
+  description: One action and one query for flight search bounded context.
+  version: 1.0.0
+  title: Eric Gurevich Flight Search
+  contact:
+    email: tug00319@temple.edu
+  license:
+    name: ¯\_(ツ)_/¯ license
+host: temple.edu
+basePath: /flights
+tags:
+  - name: query
+    description: ' Provided a user-searched route, get alternate routes.'
+  - name: action
+    description: 'Save user’s flight search to user profile and allow for later retrieval. '
+schemes:
+  - https
+  - http
+paths:
+  /search:
+    get:
+      tags:
+        - query
+      summary: 'Provided a user-searched route, get alternate routes.'
+      operationId: getAlternate
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: originLocation
+          in: query
+          required: true
+          type: string
+          description: 'Location of origin departure, either airport or city (e.g. "PHL").'
+        - name: originDateTime
+          in: query
+          required: true
+          type: string
+          description: >-
+            ISO datetime string of origin departure (e.g.
+            "2008-09-15T15:53:00").
+        - name: returnLocation
+          in: query
+          required: true
+          type: string
+          description: 'Location of return departure, either airport or city (e.g. "JFK").'
+        - name: returnDateTime
+          in: query
+          required: true
+          type: string
+          description: >-
+            ISO 8601 datetime string of origin departure (e.g.
+            "2008-09-15T15:53:00").
+        - name: priceRangeHigh
+          in: query
+          type: integer
+          description: Max price of tickets in USD.
+        - name: priceRangeLow
+          in: query
+          type: integer
+          description: Min price of tickets in USD.
+        - name: maxNoStops
+          in: query
+          type: integer
+          description: Max number of stops.
+        - name: sortBy
+          in: query
+          type: string
+          description: >-
+            Sort by price, datetime, distance, numstops, or rating (e.g.
+            "price").
+      responses:
+        '200':
+          description: >-
+            Successful operation. Returns array of query-matching origin/return
+            flight ID pairs.
+          schema:
+            description: Flight id
+            type: array
+            items:
+              type: object
+              properties:
+                originID:
+                  type: integer
+                returnID:
+                  type: integer
+            example:
+              - originID: 124934
+                returnID: 654321
+              - originID: 101010
+                returnID: 121212
+        '401':
+          description: Invalid search parameters (location or datetime)
+        '402':
+          description: 'Invalid filter parameters (price range, nostops, or sortby)'
+        '404':
+          description: No matching flights found
+        '499':
+          description: Other error ¯\\\_(ツ)\_/¯
+  /search/save:
+    put:
+      tags:
+        - action
+      summary: 'Provided a user-searched route, get alternate routes.'
+      operationId: save
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: userID
+          in: query
+          required: true
+          type: string
+          description: Unique user ID (e.g. "30bfc8af-d69d-4a2a-905c-2339a5fcd158").
+        - name: searchDateTime
+          in: query
+          required: true
+          type: string
+          description: >-
+            ISO datetime string of when search was performed (e.g.
+            "2008-09-15T15:53:00").
+        - name: originLocation
+          in: query
+          required: true
+          type: string
+          description: 'Location of origin departure, either airport or city (e.g. "PHL").'
+        - name: originDateTime
+          in: query
+          required: true
+          type: string
+          description: >-
+            ISO datetime string of origin departure (e.g.
+            "2008-09-15T15:53:00").
+        - name: returnLocation
+          in: query
+          required: true
+          type: string
+          description: 'Location of return departure, either airport or city (e.g. "JFK").'
+        - name: returnDateTime
+          in: query
+          required: true
+          type: string
+          description: >-
+            ISO 8601 datetime string of origin departure (e.g.
+            "2008-09-15T15:53:00").
+        - name: priceRangeHigh
+          in: query
+          type: integer
+          description: Max price of tickets in USD.
+        - name: priceRangeLow
+          in: query
+          type: integer
+          description: Min price of tickets in USD.
+        - name: maxNoStops
+          in: query
+          type: integer
+          description: Max number of stops.
+        - name: sortBy
+          in: query
+          type: string
+          description: >-
+            Sort by price, datetime, distance, numstops, or rating (e.g.
+            "price").
+      responses:
+        '200':
+          description: Successful operation
+        '401':
+          description: Invalid search parameters (location or datetime)
+        '402':
+          description: 'Invalid filter parameters (price range, nostops, or sortby)'
+        '410':
+          description: Invalid User ID
+        '411':
+          description: Invalid search datetime
+        '499':
+          description: Other error ¯\\\_(ツ)\_/¯
