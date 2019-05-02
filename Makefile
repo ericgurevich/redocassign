@@ -1,8 +1,5 @@
 .PHONY: docs
 docs:
-	#must run with sudo on my machine to start npm server
-	sudo npm i -g http-server
-	http-server -p 8000 --cors &
-	docker pull redocly/redoc
-	docker run -p 8081:80 -e SPEC_URL=http://localhost:8000/swagger.yaml redocly/redoc &
-	#running. access from dockerurl:8081
+	docker build -t loc/redoc-gurevich .
+	docker run -p 80:80 -v $$PWD/specs:/app/specs loc/redoc-gurevich
+	#running. access from dockerurl:80

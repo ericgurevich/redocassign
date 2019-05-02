@@ -18,7 +18,7 @@ schemes:
   - https
   - http
 paths:
-  /search:
+  /search/get_routes:
     get:
       tags:
         - query
@@ -166,7 +166,12 @@ paths:
             "price").
       responses:
         '200':
-          description: Successful operation
+          description: Successful operation. Returns search ID.
+          schema:
+            description: Flight id
+            type: integer
+            example:
+              - searchID: 12345
         '401':
           description: Invalid search parameters (location or datetime)
         '402':
